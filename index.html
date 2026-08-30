@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roads to Doomsday — Watch Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #07070a;
+    --bg-soft: #0e0e14;
+    --film: #16161f;
+    --gold: #d4af37;
+    --gold-dim: #7a6a2e;
+    --paper: #ece6d8;
+    --saga-infinity: #4fa3e0;
+    --saga-multiverse: #9b6ee0;
+    --saga-doomsday: #e0524f;
+    --line: rgba(236,230,216,0.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--paper);font-family:'Work Sans',sans-serif;}
+  body{
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(79,163,224,0.06), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(224,82,79,0.06), transparent 40%);
+    min-height:100vh;
+    padding-bottom:80px;
+  }
+
+  .marquee{
+    text-align:center;
+    padding:56px 20px 28px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    letter-spacing:0.35em;
+    font-size:11px;
+    color:var(--gold);
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  h1{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(42px,9vw,84px);
+    letter-spacing:0.03em;
+    margin:0;
+    line-height:0.95;
+    background:linear-gradient(180deg,#fff, var(--gold) 140%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:0 0 40px rgba(212,175,55,0.15);
+  }
+  .subhead{
+    font-size:14px;
+    color:rgba(236,230,216,0.55);
+    margin-top:10px;
+    max-width:480px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  /* Reel progress */
+  .reel-wrap{
+    max-width:640px;
+    margin:34px auto 0;
+    padding:0 20px;
+  }
+  .reel-track{
+    position:relative;
+    height:14px;
+    background:var(--bg-soft);
+    border-radius:8px;
+    overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .reel-fill{
+    height:100%;
+    width:0%;
+    border-radius:8px;
+    background:linear-gradient(90deg, var(--saga-infinity), var(--gold) 55%, var(--saga-doomsday));
+    transition:width 0.6s cubic-bezier(.4,0,.2,1);
+  }
+  .reel-stats{
+    display:flex;
+    justify-content:space-between;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:rgba(236,230,216,0.6);
+    margin-top:8px;
+  }
+  .reel-stats b{color:var(--gold); font-weight:600;}
+
+  .filters{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    flex-wrap:wrap;
+    max-width:640px;
+    margin:22px auto 0;
+    padding:0 20px;
+  }
+  .filter-btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.05em;
+    background:transparent;
+    color:rgba(236,230,216,0.6);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:7px 14px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .filter-btn:hover{border-color:var(--gold-dim); color:var(--paper);}
+  .filter-btn.active{background:var(--gold); color:#1a1508; border-color:var(--gold); font-weight:600;}
+
+  .strip-wrap{
+    max-width:640px;
+    margin:36px auto;
+    padding:0 20px;
+  }
+
+  .saga{
+    margin-bottom:34px;
+  }
+  .saga-head{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:14px;
+    padding-left:4px;
+  }
+  .saga-dot{
+    width:9px;height:9px;border-radius:50%;
+    flex:none;
+  }
+  .saga-title{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:22px;
+    letter-spacing:0.04em;
+  }
+  .saga-count{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:rgba(236,230,216,0.4);
+  }
+
+  /* film strip container with sprocket holes */
+  .film{
+    position:relative;
+    background:var(--film);
+    border-radius:10px;
+    border:1px solid var(--line);
+    overflow:hidden;
+  }
+  .sprockets{
+    position:absolute;
+    top:0; bottom:0;
+    width:20px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-around;
+    padding:10px 0;
+  }
+  .sprockets.left{left:0;}
+  .sprockets.right{right:0;}
+  .sprockets span{
+    width:7px;height:7px;
+    margin:0 auto;
+    background:var(--bg);
+    border-radius:2px;
+    opacity:0.6;
+  }
+
+  .ticket{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 34px;
+    border-bottom:1px dashed var(--line);
+    cursor:pointer;
+    user-select:none;
+    transition:background 0.25s;
+  }
+  .ticket:last-child{border-bottom:none;}
+  .ticket:hover{background:rgba(212,175,55,0.04);}
+
+  .punch{
+    flex:none;
+    width:30px;height:30px;
+    border-radius:50%;
+    border:2px solid rgba(236,230,216,0.3);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    transition:border-color 0.25s, background 0.25s, transform 0.25s;
+  }
+  .punch::after{
+    content:'';
+    width:0;height:0;
+    opacity:0;
+    transition:all 0.2s;
+  }
+  .ticket.watched .punch{
+    background:var(--gold);
+    border-color:var(--gold);
+    transform:scale(1.08) rotate(-8deg);
+  }
+  .punch svg{
+    width:15px;height:15px;
+    stroke:#1a1508;
+    fill:none;
+    stroke-width:3;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:20;
+    stroke-dashoffset:20;
+    transition:stroke-dashoffset 0.35s ease 0.05s;
+  }
+  .ticket.watched .punch svg{ stroke-dashoffset:0; }
+
+  .ticket-body{ flex:1; min-width:0; }
+  .ticket-order{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:var(--gold-dim);
+    letter-spacing:0.1em;
+  }
+  .ticket-title{
+    font-size:15.5px;
+    font-weight:600;
+    margin-top:1px;
+    transition:color 0.25s, opacity 0.25s;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .ticket.watched .ticket-title{
+    color:rgba(236,230,216,0.4);
+    text-decoration:line-through;
+    text-decoration-color:var(--gold-dim);
+  }
+
+  .stub{
+    flex:none;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:rgba(236,230,216,0.35);
+    opacity:0;
+    transform:translateX(6px);
+    transition:all 0.3s;
+  }
+  .ticket.watched .stub{ opacity:1; transform:translateX(0); }
+
+  footer{
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:rgba(236,230,216,0.3);
+    margin-top:50px;
+    padding:0 20px;
+  }
+  footer a{ color:var(--gold-dim); }
+
+  .celebrate{
+    text-align:center;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:0;
+    max-height:0;
+    overflow:hidden;
+    color:var(--gold);
+    transition:all 0.5s;
+    letter-spacing:0.05em;
+  }
+  .celebrate.show{
+    font-size:20px;
+    max-height:60px;
+    margin-top:20px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="marquee">
+    <div class="eyebrow">Timeline Traverse</div>
+    <h1>ROADS TO<br>DOOMSDAY</h1>
+    <p class="subhead">39 stops on the road to Avengers: Doomsday. Punch each ticket as you watch.</p>
+  </div>
+
+  <div class="reel-wrap">
+    <div class="reel-track"><div class="reel-fill" id="reelFill"></div></div>
+    <div class="reel-stats">
+      <span><b id="watchedCount">0</b> / 39 watched</span>
+      <span id="pctLabel">0%</span>
+    </div>
+    <div class="celebrate" id="celebrate">🎬 SAGA COMPLETE — SEE YOU AT DOOMSDAY</div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="unwatched">Unwatched</button>
+    <button class="filter-btn" data-filter="watched">Watched</button>
+  </div>
+
+  <div class="strip-wrap" id="stripWrap"></div>
+
+  <footer>Progress resets on reload — this page keeps no data. Built as a static tracker.</footer>
+
+<script>
+const SAGAS = [
+  {
+    name: "Infinity Saga",
+    color: "var(--saga-infinity)",
+    movies: [
+      "Iron Man","Hulk","Iron Man 2",
+      "The Avengers","Captain America: The First Avenger","Thor",
+      "Iron Man 3","Thor: The Dark World","Captain America: The Winter Soldier",
+      "Ant-Man","Avengers: Age of Ultron","Guardians of the Galaxy",
+      "Captain America: Civil War","Doctor Strange","Guardians of the Galaxy Vol. 2",
+      "Black Panther","Thor: Ragnarok","Spider-Man: Homecoming",
+      "Avengers: Infinity War","Ant-Man and the Wasp","Captain Marvel",
+      "Black Widow","Spider-Man: Far From Home","Avengers: Endgame"
+    ]
+  },
+  {
+    name: "Multiverse Saga",
+    color: "var(--saga-multiverse)",
+    movies: [
+      "Shang-Chi and the Legend of the Ten Rings","Eternals","Spider-Man: No Way Home",
+      "Black Panther: Wakanda Forever","Thor: Love and Thunder","Doctor Strange in the Multiverse of Madness",
+      "Ant-Man and the Wasp: Quantumania","Guardians of the Galaxy Vol. 3","The Marvels"
+    ]
+  },
+  {
+    name: "Doomsday Saga",
+    color: "var(--saga-doomsday)",
+    movies: [
+      "Thunderbolts* / The New Avengers","Captain America: Brave New World","Deadpool & Wolverine",
+      "The Fantastic Four: First Steps","Spider-Man: Brand New Day","Avengers: Doomsday"
+    ]
+  }
+];
+
+let order = 1;
+const all = [];
+SAGAS.forEach(saga => saga.movies.forEach(title => {
+  all.push({ id: order, title, saga: saga.name, color: saga.color, watched: false });
+  order++;
+}));
+
+let currentFilter = "all";
+
+function render(){
+  const wrap = document.getElementById('stripWrap');
+  wrap.innerHTML = "";
+
+  SAGAS.forEach(saga => {
+    const items = all.filter(m => m.saga === saga.name &&
+      (currentFilter === "all" || (currentFilter === "watched" ? m.watched : !m.watched)));
+    if(items.length === 0) return;
+
+    const sagaEl = document.createElement('div');
+    sagaEl.className = 'saga';
+
+    const head = document.createElement('div');
+    head.className = 'saga-head';
+    head.innerHTML = `<span class="saga-dot" style="background:${saga.color}"></span>
+      <span class="saga-title">${saga.name}</span>
+      <span class="saga-count">${saga.movies.filter(t=>all.find(m=>m.title===t).watched).length}/${saga.movies.length}</span>`;
+    sagaEl.appendChild(head);
+
+    const film = document.createElement('div');
+    film.className = 'film';
+
+    const sprL = document.createElement('div'); sprL.className='sprockets left';
+    const sprR = document.createElement('div'); sprR.className='sprockets right';
+    for(let i=0;i<Math.max(6, items.length*1.4);i++){
+      sprL.appendChild(document.createElement('span'));
+      sprR.appendChild(document.createElement('span'));
+    }
+    film.appendChild(sprL);
+
+    items.forEach(m => {
+      const t = document.createElement('div');
+      t.className = 'ticket' + (m.watched ? ' watched' : '');
+      t.innerHTML = `
+        <div class="punch"><svg viewBox="0 0 24 24"><polyline points="4,13 9,18 20,6"/></svg></div>
+        <div class="ticket-body">
+          <div class="ticket-order">STOP ${String(m.id).padStart(2,'0')}</div>
+          <div class="ticket-title">${m.title}</div>
+        </div>
+        <div class="stub">SEEN ✓</div>
+      `;
+      t.addEventListener('click', () => {
+        m.watched = !m.watched;
+        render();
+      });
+      film.appendChild(t);
+    });
+
+    film.appendChild(sprR);
+    sagaEl.appendChild(film);
+    wrap.appendChild(sagaEl);
+  });
+
+  const watchedCount = all.filter(m => m.watched).length;
+  const pct = Math.round((watchedCount / all.length) * 100);
+  document.getElementById('watchedCount').textContent = watchedCount;
+  document.getElementById('pctLabel').textContent = pct + '%';
+  document.getElementById('reelFill').style.width = pct + '%';
+  document.getElementById('celebrate').classList.toggle('show', pct === 100);
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+render();
+</script>
+</body>
+</html>
