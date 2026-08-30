@@ -312,7 +312,11 @@
 
   <div class="strip-wrap" id="stripWrap"></div>
 
-  <footer>Progress resets on reload — this page keeps no data. Built as a static tracker.</footer>
+  <footer>
+    Progress is saved in this browser, so it'll be here next time you visit.
+    <br>
+    <button id="resetBtn" style="margin-top:10px;background:transparent;border:1px solid rgba(236,230,216,0.2);color:rgba(236,230,216,0.5);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.05em;border-radius:999px;padding:6px 14px;cursor:pointer;">Reset all progress</button>
+  </footer>
 
 <script>
 const SAGAS = [
@@ -355,6 +359,31 @@ SAGAS.forEach(saga => saga.movies.forEach(title => {
   all.push({ id: order, title, saga: saga.name, color: saga.color, watched: false });
   order++;
 }));
+
+const STORAGE_KEY = "roads-to-doomsday-watched";
+
+function loadProgress(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const watchedIds = JSON.parse(raw);
+    if(!Array.isArray(watchedIds)) return;
+    all.forEach(m => { m.watched = watchedIds.includes(m.id); });
+  }catch(e){
+    console.warn("Could not load saved progress:", e);
+  }
+}
+
+function saveProgress(){
+  try{
+    const watchedIds = all.filter(m => m.watched).map(m => m.id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(watchedIds));
+  }catch(e){
+    console.warn("Could not save progress:", e);
+  }
+}
+
+loadProgress();
 
 let currentFilter = "all";
 
@@ -401,6 +430,7 @@ function render(){
       `;
       t.addEventListener('click', () => {
         m.watched = !m.watched;
+        saveProgress();
         render();
       });
       film.appendChild(t);
@@ -426,6 +456,14 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     currentFilter = btn.dataset.filter;
     render();
   });
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if(confirm("Reset all watched movies? This can't be undone.")){
+    all.forEach(m => m.watched = false);
+    saveProgress();
+    render();
+  }
 });
 
 render();
