@@ -1,0 +1,123 @@
+<svg width="1200" height="300" viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#07070a"/>
+      <stop offset="55%" stop-color="#0e0e14"/>
+      <stop offset="100%" stop-color="#07070a"/>
+    </linearGradient>
+    <radialGradient id="portal" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe9b0" stop-opacity="0.95"/>
+      <stop offset="35%" stop-color="#d4af37" stop-opacity="0.55"/>
+      <stop offset="70%" stop-color="#4fa3e0" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#4fa3e0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="title" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+    <style>
+      .spr { fill: #07070a; opacity: 0.85; }
+      .star { fill: #ece6d8; }
+      .twinkle { animation: tw 2.6s ease-in-out infinite; }
+      .twinkle2 { animation: tw 3.4s ease-in-out infinite 0.6s; }
+      .twinkle3 { animation: tw 2.1s ease-in-out infinite 1.1s; }
+      @keyframes tw {
+        0%, 100% { opacity: 0.15; }
+        50% { opacity: 1; }
+      }
+      .pulse { animation: pulseGlow 3.2s ease-in-out infinite; transform-origin: 150px 150px; }
+      @keyframes pulseGlow {
+        0%, 100% { transform: scale(0.92); opacity: 0.85; }
+        50% { transform: scale(1.06); opacity: 1; }
+      }
+      .ring { animation: spin 18s linear infinite; transform-origin: 150px 150px; }
+      @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+      .title-glow { animation: glow 3s ease-in-out infinite; }
+      @keyframes glow {
+        0%, 100% { filter: drop-shadow(0 0 6px rgba(212,175,55,0.25)); }
+        50% { filter: drop-shadow(0 0 18px rgba(212,175,55,0.55)); }
+      }
+      text { font-family: 'Arial Black', Impact, sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="300" fill="url(#bg)"/>
+
+  <!-- film sprockets top and bottom -->
+  <g>
+    <!-- generated via loop below -->
+  </g>
+  <g id="sprocketsTop">
+    <rect class="spr" x="10" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="50" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="90" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="130" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="170" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="210" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="250" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="290" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="330" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="370" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="410" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="450" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="490" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="530" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="570" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="610" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="650" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="690" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="730" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="770" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="810" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="850" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="890" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="930" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="970" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="1010" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="1050" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="1090" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="1130" y="8" width="16" height="16" rx="3"/>
+    <rect class="spr" x="1170" y="8" width="16" height="16" rx="3"/>
+  </g>
+  <g id="sprocketsBottom" transform="translate(0,260)">
+    <use href="#sprocketsTop" x="0" y="-8"/>
+  </g>
+
+  <!-- twinkling stars -->
+  <circle class="star twinkle" cx="90" cy="70" r="1.6"/>
+  <circle class="star twinkle2" cx="140" cy="220" r="1.3"/>
+  <circle class="star twinkle3" cx="60" cy="180" r="1.4"/>
+  <circle class="star twinkle" cx="1120" cy="80" r="1.6"/>
+  <circle class="star twinkle2" cx="1080" cy="220" r="1.3"/>
+  <circle class="star twinkle3" cx="1150" cy="150" r="1.5"/>
+  <circle class="star twinkle" cx="1000" cy="60" r="1.2"/>
+  <circle class="star twinkle2" cx="950" cy="230" r="1.4"/>
+  <circle class="star twinkle3" cx="880" cy="90" r="1.3"/>
+  <circle class="star twinkle" cx="250" cy="60" r="1.3"/>
+  <circle class="star twinkle2" cx="320" cy="230" r="1.2"/>
+
+  <!-- portal / arc glow, left side -->
+  <g transform="translate(0,0)">
+    <circle class="pulse" cx="150" cy="150" r="70" fill="url(#portal)"/>
+    <g class="ring">
+      <circle cx="150" cy="150" r="58" fill="none" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="4 10" opacity="0.6"/>
+    </g>
+    <circle cx="150" cy="150" r="34" fill="none" stroke="#ece6d8" stroke-width="1" opacity="0.35"/>
+  </g>
+
+  <!-- portal / arc glow, right side -->
+  <g transform="translate(900,0)">
+    <circle class="pulse" cx="150" cy="150" r="70" fill="url(#portal)"/>
+    <g class="ring">
+      <circle cx="150" cy="150" r="58" fill="none" stroke="#e0524f" stroke-width="1.5" stroke-dasharray="4 10" opacity="0.6"/>
+    </g>
+    <circle cx="150" cy="150" r="34" fill="none" stroke="#ece6d8" stroke-width="1" opacity="0.35"/>
+  </g>
+
+  <!-- title -->
+  <g class="title-glow" text-anchor="middle">
+    <text x="600" y="128" font-size="20" letter-spacing="8" fill="#d4af37" opacity="0.85">TIMELINE TRAVERSE</text>
+    <text x="600" y="195" font-size="64" font-weight="900" letter-spacing="4" fill="url(#title)">ROADS TO DOOMSDAY</text>
+    <text x="600" y="228" font-size="15" letter-spacing="3" fill="#ece6d8" opacity="0.55">39 FILMS · 3 SAGAS · 1 WATCHLIST</text>
+  </g>
+</svg>
