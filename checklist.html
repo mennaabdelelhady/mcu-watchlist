@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCU Complete Rewatch Checklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #07070a;
+    --bg-soft: #0e0e14;
+    --panel: #16161f;
+    --red: #e0524f;
+    --purple: #9b6ee0;
+    --gold: #d4af37;
+    --gold-dim: #7a6a2e;
+    --paper: #ece6d8;
+    --line: rgba(236,230,216,0.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--paper);font-family:'Work Sans',sans-serif;}
+  body{
+    background-image:
+      radial-gradient(circle at 12% 10%, rgba(224,82,79,0.07), transparent 40%),
+      radial-gradient(circle at 88% 88%, rgba(155,110,224,0.07), transparent 40%);
+    min-height:100vh;
+    padding-bottom:70px;
+    overflow-x:hidden;
+  }
+
+  .bg-fx{ position:fixed !important; inset:0; z-index:0 !important; pointer-events:none; }
+  #bgCanvas{ width:100%; height:100%; display:block; }
+  .comic-overlay{
+    background-image: radial-gradient(rgba(236,230,216,0.06) 1px, transparent 1.5px);
+    background-size: 16px 16px;
+    opacity:0.4;
+    mix-blend-mode:overlay;
+  }
+  .portal-glow{
+    background:
+      radial-gradient(circle at 50% 35%, rgba(224,82,79,0.10), transparent 55%),
+      radial-gradient(circle at 15% 85%, rgba(155,110,224,0.09), transparent 45%),
+      radial-gradient(circle at 90% 12%, rgba(212,175,55,0.09), transparent 45%);
+    animation: portalBreathe 9s ease-in-out infinite;
+  }
+  @keyframes portalBreathe{
+    0%,100%{ opacity:0.65; transform:scale(1); }
+    50%{ opacity:1; transform:scale(1.06); }
+  }
+  body > *:not(script){ position:relative; z-index:1; }
+
+  .marquee{ text-align:center; padding:50px 20px 22px; }
+  .marvel-badge{
+    display:inline-block;
+    background:linear-gradient(180deg,#e23636,#a11616);
+    color:#fff;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:26px;
+    letter-spacing:0.06em;
+    padding:6px 22px;
+    border-radius:4px;
+    box-shadow:0 4px 20px rgba(226,54,54,0.35);
+    margin-bottom:18px;
+  }
+  h1{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(34px,7vw,58px);
+    letter-spacing:0.02em;
+    margin:0;
+    line-height:1.05;
+    background:linear-gradient(90deg,var(--red),var(--purple));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .subhead{ font-size:13px; color:rgba(236,230,216,0.55); margin-top:10px; }
+
+  .reel-wrap{ max-width:700px; margin:30px auto 0; padding:0 20px; }
+  .reel-track{ position:relative; height:14px; background:var(--bg-soft); border-radius:8px; overflow:hidden; border:1px solid var(--line); }
+  .reel-fill{ height:100%; width:0%; border-radius:8px; background:linear-gradient(90deg, var(--gold), var(--red) 55%, var(--purple)); transition:width 0.6s cubic-bezier(.4,0,.2,1); }
+  .reel-stats{ display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:12px; color:rgba(236,230,216,0.6); margin-top:8px; }
+  .reel-stats b{ color:var(--gold); font-weight:600; }
+
+  .filters{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; max-width:700px; margin:20px auto 0; padding:0 20px; }
+  .filter-btn{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.05em;
+    background:transparent; color:rgba(236,230,216,0.6); border:1px solid var(--line);
+    border-radius:999px; padding:7px 14px; cursor:pointer; transition:all 0.2s;
+  }
+  .filter-btn:hover{ border-color:var(--gold-dim); color:var(--paper); }
+  .filter-btn.active{ background:var(--gold); color:#1a1508; border-color:var(--gold); font-weight:600; }
+
+  .layout{
+    max-width:1100px;
+    margin:36px auto;
+    padding:0 20px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 28px;
+  }
+  @media (max-width:800px){ .layout{ grid-template-columns:1fr; } }
+
+  .saga{ margin-bottom:8px; grid-column:1 / -1; }
+  .saga-head{ display:flex; align-items:baseline; gap:10px; margin:26px 0 6px; }
+  .saga-dot{ width:9px;height:9px;border-radius:50%; flex:none; }
+  .saga-title{ font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.04em; }
+  .saga-count{ font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(236,230,216,0.4); }
+
+  .phase{ margin-bottom:22px; }
+  .phase-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; padding:0 2px; }
+  .phase-title{ font-size:13px; font-weight:700; color:var(--gold); letter-spacing:0.03em; text-transform:uppercase; }
+  .phase-count{ font-family:'JetBrains Mono',monospace; font-size:10px; color:rgba(236,230,216,0.35); }
+
+  .panel{ background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+
+  .item{
+    display:flex; align-items:center; gap:12px;
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer; user-select:none;
+    transition:background 0.2s;
+  }
+  .item:last-child{ border-bottom:none; }
+  .item:hover{ background:rgba(212,175,55,0.04); }
+
+  .box{
+    flex:none; width:20px;height:20px; border-radius:5px;
+    border:2px solid rgba(236,230,216,0.3);
+    display:flex; align-items:center; justify-content:center;
+    transition:all 0.2s;
+  }
+  .item.checked .box{ background:var(--gold); border-color:var(--gold); }
+  .box svg{
+    width:12px;height:12px; stroke:#1a1508; fill:none;
+    stroke-width:3; stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:18; stroke-dashoffset:18; transition:stroke-dashoffset 0.3s ease 0.03s;
+  }
+  .item.checked .box svg{ stroke-dashoffset:0; }
+
+  .item-title{ font-size:13.5px; font-weight:500; transition:color 0.2s; }
+  .item.checked .item-title{ color:rgba(236,230,216,0.4); text-decoration:line-through; text-decoration-color:var(--gold-dim); }
+  .item-year{ margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:rgba(236,230,216,0.35); flex:none; }
+
+  footer{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(236,230,216,0.3); margin-top:40px; padding:0 20px; }
+  footer button{
+    margin-top:10px; background:transparent; border:1px solid rgba(236,230,216,0.2);
+    color:rgba(236,230,216,0.5); font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:0.05em; border-radius:999px; padding:6px 14px; cursor:pointer;
+  }
+
+  .celebrate{ text-align:center; font-family:'Bebas Neue',sans-serif; font-size:0; max-height:0; overflow:hidden; color:var(--gold); transition:all 0.5s; letter-spacing:0.05em; }
+  .celebrate.show{ font-size:20px; max-height:60px; margin-top:18px; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+
+  <canvas id="bgCanvas" class="bg-fx"></canvas>
+  <div class="portal-glow bg-fx"></div>
+  <div class="comic-overlay bg-fx"></div>
+
+  <div class="marquee">
+    <div class="marvel-badge">MARVEL</div>
+    <h1>MARVEL CINEMATIC<br>UNIVERSE</h1>
+    <p class="subhead">The complete MCU rewatch checklist — every movie and series, Phase One to Phase Six.</p>
+  </div>
+
+  <div class="reel-wrap">
+    <div class="reel-track"><div class="reel-fill" id="reelFill"></div></div>
+    <div class="reel-stats">
+      <span><b id="watchedCount">0</b> / <span id="totalCount">0</span> checked off</span>
+      <span id="pctLabel">0%</span>
+    </div>
+    <div class="celebrate" id="celebrate">🍿 CAUGHT UP ON THE ENTIRE MCU</div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="unwatched">Unwatched</button>
+    <button class="filter-btn" data-filter="watched">Watched</button>
+  </div>
+
+  <div class="layout" id="layout"></div>
+
+  <footer>
+    Progress is saved in this browser, so it'll be here next time you visit.
+    <br>
+    <button id="resetBtn">Reset all progress</button>
+    <br><br>
+    Checklist content based on a design by <a href="https://instagram.com/rhnnreyy_" style="color:var(--gold-dim)">@rhnnreyy_</a>.
+  </footer>
+
+<script>
+const SAGAS = [
+  {
+    name: "The Infinity Saga",
+    color: "var(--red)",
+    phases: [
+      {
+        name: "Phase One (2008–2012)",
+        items: [
+          ["Iron Man","2008"], ["The Incredible Hulk","2008"], ["Iron Man 2","2010"],
+          ["Thor","2011"], ["Captain America: The First Avenger","2011"], ["The Avengers","2012"]
+        ]
+      },
+      {
+        name: "Phase Two (2013–2015)",
+        items: [
+          ["Iron Man 3","2013"], ["Thor: The Dark World","2013"], ["Captain America: The Winter Soldier","2014"],
+          ["Guardians of the Galaxy","2014"], ["Avengers: Age of Ultron","2015"], ["Ant-Man","2015"]
+        ]
+      },
+      {
+        name: "Phase Three (2016–2019)",
+        items: [
+          ["Captain America: Civil War","2016"], ["Doctor Strange","2016"], ["Guardians of the Galaxy Vol. 2","2017"],
+          ["Spider-Man: Homecoming","2017"], ["Thor: Ragnarok","2017"], ["Black Panther","2018"],
+          ["Avengers: Infinity War","2018"], ["Ant-Man and the Wasp","2018"], ["Captain Marvel","2019"],
+          ["Avengers: Endgame","2019"], ["Spider-Man: Far From Home","2019"]
+        ]
+      }
+    ]
+  },
+  {
+    name: "The Multiverse Saga",
+    color: "var(--purple)",
+    phases: [
+      {
+        name: "Phase Four (2021–2022)",
+        items: [
+          ["WandaVision","2021"], ["The Falcon and the Winter Soldier","2021"], ["Loki Season 1","2021"],
+          ["Black Widow","2021"], ["What If...? Season 1","2021"], ["Shang-Chi and the Legend of the Ten Rings","2021"],
+          ["Eternals","2021"], ["Hawkeye","2021"], ["Spider-Man: No Way Home","2021"],
+          ["Moon Knight","2022"], ["Doctor Strange in the Multiverse of Madness","2022"], ["Ms. Marvel","2022"],
+          ["Thor: Love and Thunder","2022"], ["I Am Groot Season 1","2022"], ["She-Hulk: Attorney at Law","2022"],
+          ["Werewolf by Night","2022"], ["Black Panther: Wakanda Forever","2022"], ["The Guardians of the Galaxy Holiday Special","2022"]
+        ]
+      },
+      {
+        name: "Phase Five (2023–2025)",
+        items: [
+          ["Ant-Man and the Wasp: Quantumania","2023"], ["Guardians of the Galaxy Vol. 3","2023"], ["Secret Invasion","2023"],
+          ["Loki Season 2","2023"], ["The Marvels","2023"], ["What If...? Season 2","2023"],
+          ["Echo","2024"], ["X-Men '97 Season 1","2024"], ["Deadpool & Wolverine","2024"],
+          ["Agatha All Along","2024"], ["What If...? Season 3","2024"], ["Captain America: Brave New World","2025"],
+          ["Daredevil: Born Again Season 1","2025"], ["Thunderbolts*","2025"], ["Ironheart","2025"],
+          ["The Fantastic Four: First Steps","2025"], ["Eyes of Wakanda","2025"], ["Marvel Zombies","2025"],
+          ["Wonder Man","2025"]
+        ]
+      },
+      {
+        name: "Phase Six (2026–2027)",
+        items: [
+          ["Daredevil: Born Again Season 2","2026"], ["X-Men '97 Season 2","2026"],
+          ["Spider-Man: Brand New Day","2026"], ["Vision Quest","2026"]
+        ]
+      }
+    ]
+  }
+];
+
+const STORAGE_KEY = "mcu-complete-checklist-watched";
+let id = 1;
+const all = [];
+SAGAS.forEach(saga => saga.phases.forEach(phase => phase.items.forEach(([title, year]) => {
+  all.push({ id, title, year, saga: saga.name, sagaColor: saga.color, phase: phase.name, watched: false });
+  id++;
+})));
+
+function loadProgress(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const watchedIds = JSON.parse(raw);
+    if(!Array.isArray(watchedIds)) return;
+    all.forEach(m => { m.watched = watchedIds.includes(m.id); });
+  }catch(e){ console.warn("Could not load saved progress:", e); }
+}
+function saveProgress(){
+  try{
+    const watchedIds = all.filter(m => m.watched).map(m => m.id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(watchedIds));
+  }catch(e){ console.warn("Could not save progress:", e); }
+}
+loadProgress();
+
+let currentFilter = "all";
+
+function render(){
+  const layout = document.getElementById('layout');
+  layout.innerHTML = "";
+
+  SAGAS.forEach(saga => {
+    const sagaItems = all.filter(m => m.saga === saga.name);
+    const sagaVisible = sagaItems.filter(m => currentFilter === "all" || (currentFilter === "watched" ? m.watched : !m.watched));
+    if(sagaVisible.length === 0) return;
+
+    const sagaHead = document.createElement('div');
+    sagaHead.className = 'saga';
+    sagaHead.innerHTML = `<div class="saga-head">
+      <span class="saga-dot" style="background:${saga.color}"></span>
+      <span class="saga-title">${saga.name}</span>
+      <span class="saga-count">${sagaItems.filter(m=>m.watched).length}/${sagaItems.length}</span>
+    </div>`;
+    layout.appendChild(sagaHead);
+
+    saga.phases.forEach(phase => {
+      const phaseItemsAll = all.filter(m => m.phase === phase.name);
+      const phaseItems = phaseItemsAll.filter(m => currentFilter === "all" || (currentFilter === "watched" ? m.watched : !m.watched));
+      if(phaseItems.length === 0) return;
+
+      const phaseEl = document.createElement('div');
+      phaseEl.className = 'phase';
+      const head = document.createElement('div');
+      head.className = 'phase-head';
+      head.innerHTML = `<span class="phase-title">${phase.name}</span><span class="phase-count">${phaseItemsAll.filter(m=>m.watched).length}/${phaseItemsAll.length}</span>`;
+      phaseEl.appendChild(head);
+
+      const panel = document.createElement('div');
+      panel.className = 'panel';
+      phaseItems.forEach(m => {
+        const row = document.createElement('div');
+        row.className = 'item' + (m.watched ? ' checked' : '');
+        row.innerHTML = `
+          <div class="box"><svg viewBox="0 0 24 24"><polyline points="4,13 9,18 20,6"/></svg></div>
+          <div class="item-title">${m.title}</div>
+          <div class="item-year">${m.year}</div>
+        `;
+        row.addEventListener('click', () => {
+          m.watched = !m.watched;
+          saveProgress();
+          render();
+        });
+        panel.appendChild(row);
+      });
+      phaseEl.appendChild(panel);
+      layout.appendChild(phaseEl);
+    });
+  });
+
+  const watchedCount = all.filter(m => m.watched).length;
+  const pct = Math.round((watchedCount / all.length) * 100);
+  document.getElementById('watchedCount').textContent = watchedCount;
+  document.getElementById('totalCount').textContent = all.length;
+  document.getElementById('pctLabel').textContent = pct + '%';
+  document.getElementById('reelFill').style.width = pct + '%';
+  document.getElementById('celebrate').classList.toggle('show', pct === 100);
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if(confirm("Reset all watched progress? This can't be undone.")){
+    all.forEach(m => m.watched = false);
+    saveProgress();
+    render();
+  }
+});
+
+render();
+
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  function resize(){ w = canvas.width = window.innerWidth; h = canvas.height = document.body.scrollHeight; }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const colors = ['212,175,55','224,82,79','155,110,224','79,163,224'];
+  const COUNT = window.innerWidth < 700 ? 30 : 60;
+  const particles = Array.from({length: COUNT}, () => ({
+    x: Math.random()*w,
+    y: Math.random()*h,
+    r: Math.random()*1.6+0.4,
+    speed: Math.random()*0.35+0.06,
+    drift: (Math.random()-0.5)*0.25,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    alpha: Math.random()*0.5+0.15,
+    twSpeed: Math.random()*0.02+0.005,
+    twPhase: Math.random()*Math.PI*2
+  }));
+
+  function tick(t){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(p => {
+      p.y -= p.speed;
+      p.x += p.drift;
+      if(p.y < -10){ p.y = h+10; p.x = Math.random()*w; }
+      if(p.x < -10) p.x = w+10;
+      if(p.x > w+10) p.x = -10;
+      const tw = (Math.sin(t*p.twSpeed + p.twPhase)+1)/2;
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(${p.color},${(p.alpha*(0.4+0.6*tw)).toFixed(2)})`;
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+    });
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
